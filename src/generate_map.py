@@ -16,21 +16,26 @@ for gpx_file in tqdm(gpx_data_dir.glob("*.gpx")):
         folium.PolyLine(route, weight=3, opacity=0.5, color="black").add_to(map)
 
 trainlines = pd.read_csv(Path.cwd() / "data/processed/trainlines.csv")
+trainshapes = pd.read_csv(Path.cwd() / "data/processed/trainshapes.csv")
 
 for train in trainlines["route_short_name"].unique():
-    print(f"{train=}")
     line = trainlines[trainlines["route_short_name"] == train]
-    print(f"{len(line)=}")
     colour = list(line["Hex"])[0]
-    print(f"{colour=}")
-    line_coords = [(v["stop_lat"], v["stop_lon"]) for _, v in line.iterrows()]
-    for x, y in line_coords:
+    folium.PolyLine(
+        trainshapes.loc[
+            trainshapes["route_short_name"] == train, ["shape_pt_lat", "shape_pt_lon"]
+        ],
+        popup=train,
+        weight=1,
+        opacity=0.5,
+        color=colour,
+    ).add_to(map)
+    for _, v in line.iterrows():
         folium.CircleMarker(
-            location=(x, y),
+            location=(v["stop_lat"], v["stop_lon"]),
+            popup=v["stop_name"],
             radius=3,
-            fill=True,
             color=colour,
-            fill_color=colour,
         ).add_to(map)
 
 target_path = Path.cwd() / "data/processed/map.html"

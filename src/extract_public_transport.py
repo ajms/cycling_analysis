@@ -8,15 +8,16 @@ routes = pd.read_csv(Path("../data/public_transport/routes.txt"))
 trips = pd.read_csv(Path("../data/public_transport/trips.txt"))
 stop_times = pd.read_csv(Path("../data/public_transport/stop_times.txt"))
 stops = pd.read_csv(Path("../data/public_transport/stops.txt"))
+shapes = pd.read_csv(Path("../data/public_transport/shapes.txt"))
 colours = pd.read_csv(
     Path("../data/public_transport/2022-12-Linienfarben.csv"), sep=";"
 )
 # %%
-trains = routes[routes["route_short_name"].str.match(r"(R|S|U).*")][
+trains = routes[routes["route_short_name"].str.match(r"(R|S).*")][
     ["route_id", "route_short_name"]
 ]
 train_trips = trains.merge(
-    trips[["route_id", "trip_id"]].drop_duplicates(),
+    trips[["route_id", "trip_id", "shape_id"]].drop_duplicates(),
     how="inner",
     on="route_id",
 )
@@ -46,4 +47,23 @@ trainlines = (
 trainlines.loc[trainlines["Hex"].isnull(), "Hex"] = "#808080"
 trainlines.drop(["Linie"], axis=1, inplace=True)
 trainlines.to_csv(Path.cwd() / "../data/processed/trainlines.csv")
+# %%
+trainshapes = (
+    train_trips.merge(shapes, how="inner", on="shape_id")
+    .drop(["trip_id", "route_id"], axis=1)
+    .drop_duplicates()
+    .sort_values(["route_short_name", "shape_pt_sequence"])
+)
+# %%
+max_ids = (
+    trainshapes.groupby(["route_short_name"])["shape_pt_sequence"].max().reset_index()
+)
+shape_ids = trainshapes.merge(
+    max_ids, on=["route_short_name", "shape_pt_sequence"], how="inner"
+)[["shape_id"]]
+# %%
+trainshapes = trainshapes.merge(shape_ids, on="shape_id", how="inner").sort_values(
+    ["route_short_name", "shape_id"]
+)
+trainshapes.to_csv(Path.cwd() / "../data/processed/trainshapes.csv")
 # %%
