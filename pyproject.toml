@@ -12,6 +12,7 @@ python = "^3.10"
 folium = "^0.14.0"
 gpxpy = "^1.5.0"
 tqdm = "^4.65.0"
+pandas = "^1.5.3"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -20,6 +21,7 @@ flake8 = "^6.0.0"
 isort = "^5.12.0"
 pre-commit-hooks = "^4.4.0"
 pre-commit = "^3.1.1"
+jupyter = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core"]
