@@ -9,6 +9,7 @@ gpx_data_dir = Path("data/raw")
 
 map = folium.Map(location=[53, 13], tiles="stamenterrain", zoom_start=10)
 
+# load gpx data to map
 for gpx_file in tqdm(gpx_data_dir.glob("*.gpx")):
     with open(gpx_file) as f:
         gpx = gpxpy.parse(f)
@@ -18,6 +19,7 @@ for gpx_file in tqdm(gpx_data_dir.glob("*.gpx")):
 trainlines = pd.read_csv(Path.cwd() / "data/processed/trainlines.csv")
 trainshapes = pd.read_csv(Path.cwd() / "data/processed/trainshapes.csv")
 
+# load train data to map
 for train in trainlines["route_short_name"].unique():
     line = trainlines[trainlines["route_short_name"] == train]
     colour = list(line["Hex"])[0]
