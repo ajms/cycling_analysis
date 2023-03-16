@@ -1,0 +1,55 @@
+[tool.poetry]
+name = "cycling-analysis"
+version = "0.1.0"
+description = ""
+authors = ["ajms <albert.schulz@posteo.de>"]
+license = "GPL3"
+readme = "README.md"
+packages = [{ include = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+folium = "^0.14.0"
+gpxpy = "^1.5.0"
+tqdm = "^4.65.0"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+flake8 = "^6.0.0"
+isort = "^5.12.0"
+pre-commit-hooks = "^4.4.0"
+pre-commit = "^3.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "-ra -q --doctest-modules"
+minversion = "7.2.1"
+testpaths = ["tests", "src"]
+
+[tool.black]
+exclude = '''
+/(
+       \.eggs         # exclude a few common directories in the
+     | \.git          # root of the project
+     | \.hg
+     | \.mypy_cache
+     | \.tox
+     | _build
+     | buck-out
+     | build
+     | dist
+)/
+'''
+include = '\.pyi?$'
+line-length = 88
+
+[tool.isort]
+include_trailing_comma = true
+line_length = 88
+multi_line_output = 3
+profile = "black"
+skip_gitignore = true
