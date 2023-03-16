@@ -27,7 +27,7 @@ for train in trainlines["route_short_name"].unique():
         trainshapes.loc[
             trainshapes["route_short_name"] == train, ["shape_pt_lat", "shape_pt_lon"]
         ],
-        popup=train,
+        tooltip=train,
         weight=1,
         opacity=0.5,
         color=colour,
@@ -35,7 +35,7 @@ for train in trainlines["route_short_name"].unique():
     for _, v in line.iterrows():
         folium.CircleMarker(
             location=(v["stop_lat"], v["stop_lon"]),
-            popup=v["stop_name"],
+            tooltip=v["stop_name"],
             radius=3,
             color=colour,
         ).add_to(map)

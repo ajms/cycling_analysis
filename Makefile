@@ -39,4 +39,10 @@ pre-commit:  ## run all pre-commit checks
 
 .PHONY: generate-map
 generate-map:  ## generate map from gpx files in data/raw
+	mkdir -p data/processed
 	poetry run python src/generate_map.py
+
+.PHONY: generate-public-trans
+generate-public-trans:  ## generate public transport data from Berlin open data for showing on map
+	mkdir -p data/processed
+	poetry run python src/extract_public_transport.py
