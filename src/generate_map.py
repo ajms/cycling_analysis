@@ -3,10 +3,13 @@ from pathlib import Path
 import folium
 import gpxpy
 import pandas as pd
+from folium import plugins
 from tqdm import tqdm
 
 
-def gpx_to_map(maps: folium.Map, gpx_data_dir: str | Path) -> folium.Map:
+def gpx_to_map(
+    maps: folium.Map, gpx_data_dir: str | Path, map_type: str = "polyline"
+) -> folium.Map:
     # load gpx data to map
     for gpx_file in tqdm(gpx_data_dir.glob("*.gpx")):
         with open(gpx_file) as f:
@@ -14,7 +17,13 @@ def gpx_to_map(maps: folium.Map, gpx_data_dir: str | Path) -> folium.Map:
             route = [
                 (p.point.latitude, p.point.longitude) for p in gpx.get_points_data()
             ]
-            maps.add_child(folium.PolyLine(route, weight=3, opacity=0.5, color="black"))
+            match map_type:
+                case "polyline":
+                    maps.add_child(
+                        folium.PolyLine(route, weight=3, opacity=0.5, color="black")
+                    )
+                case "heatmap":
+                    maps.add_child(plugins.HeatMap(route, radius=5, blur=3))
     return maps
 
 
@@ -66,14 +75,16 @@ def tracking_map():
 
 def races_map():
     gpx_data_dir = Path("data/raw/races")
-    maps = folium.Map(location=[53, 13], tiles="openstreetmap", zoom_start=5)
-    maps = gpx_to_map(maps=maps, gpx_data_dir=gpx_data_dir)
+    map_type = "heatmap"
+    tiles = "cartodbdark_matter"
+    maps = folium.Map(location=[53, 13], tiles=tiles, zoom_start=5)
+    maps = gpx_to_map(maps=maps, gpx_data_dir=gpx_data_dir, map_type="heatmap")
 
-    target_path = Path.cwd() / "data/processed/map_races.html"
+    target_path = Path.cwd() / f"data/processed/map_races_{tiles}_{map_type}.html"
     maps.save(target_path)
     print(f"Open map: \x1b]8;;{target_path}\x1b\\Ctrl+Click here\x1b]8;;\x1b\\")
 
 
 if __name__ == "__main__":
-    # tracking_map()
-    races_map()
+    tracking_map()
+    # races_map()
