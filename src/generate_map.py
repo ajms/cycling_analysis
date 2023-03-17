@@ -75,10 +75,10 @@ def tracking_map():
 
 def races_map():
     gpx_data_dir = Path("data/raw/races")
-    map_type = "heatmap"
-    tiles = "cartodbdark_matter"
+    map_type = "polyline"
+    tiles = "openstreetmap"  # "cartodbdark_matter"
     maps = folium.Map(location=[53, 13], tiles=tiles, zoom_start=5)
-    maps = gpx_to_map(maps=maps, gpx_data_dir=gpx_data_dir, map_type="heatmap")
+    maps = gpx_to_map(maps=maps, gpx_data_dir=gpx_data_dir, map_type=map_type)
 
     target_path = Path.cwd() / f"data/processed/map_races_{tiles}_{map_type}.html"
     maps.save(target_path)
@@ -86,5 +86,5 @@ def races_map():
 
 
 if __name__ == "__main__":
-    tracking_map()
-    # races_map()
+    # tracking_map()
+    races_map()
