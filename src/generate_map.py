@@ -49,8 +49,8 @@ def public_transport_to_map(
     return maps
 
 
-def main():
-    gpx_data_dir = Path("data/raw")
+def tracking_map():
+    gpx_data_dir = Path("data/raw/tracking")
     maps = folium.Map(location=[53, 13], tiles="stamenterrain", zoom_start=10)
     maps = gpx_to_map(maps=maps, gpx_data_dir=gpx_data_dir)
 
@@ -59,10 +59,21 @@ def main():
 
     maps = public_transport_to_map(maps=maps, lines=trainlines, shapes=trainshapes)
 
-    target_path = Path.cwd() / "data/processed/map.html"
+    target_path = Path.cwd() / "data/processed/map_tracking.html"
+    maps.save(target_path)
+    print(f"Open map: \x1b]8;;{target_path}\x1b\\Ctrl+Click here\x1b]8;;\x1b\\")
+
+
+def races_map():
+    gpx_data_dir = Path("data/raw/races")
+    maps = folium.Map(location=[53, 13], tiles="openstreetmap", zoom_start=5)
+    maps = gpx_to_map(maps=maps, gpx_data_dir=gpx_data_dir)
+
+    target_path = Path.cwd() / "data/processed/map_races.html"
     maps.save(target_path)
     print(f"Open map: \x1b]8;;{target_path}\x1b\\Ctrl+Click here\x1b]8;;\x1b\\")
 
 
 if __name__ == "__main__":
-    main()
+    # tracking_map()
+    races_map()
