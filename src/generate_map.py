@@ -60,8 +60,11 @@ def public_transport_to_map(
 
 def tracking_map():
     gpx_data_dir = Path("data/raw/tracking")
-    maps = folium.Map(location=[53, 13], tiles="stamenterrain", zoom_start=10)
-    maps = gpx_to_map(maps=maps, gpx_data_dir=gpx_data_dir)
+
+    map_type = "polyline"
+    tiles = "openstreetmap"  # "cartodbdark_matter"
+    maps = folium.Map(location=[53, 13], tiles=tiles, zoom_start=10)
+    maps = gpx_to_map(maps=maps, gpx_data_dir=gpx_data_dir, map_type=map_type)
 
     trainlines = pd.read_csv(Path.cwd() / "data/processed/trainlines.csv")
     trainshapes = pd.read_csv(Path.cwd() / "data/processed/trainshapes.csv")
@@ -74,10 +77,10 @@ def tracking_map():
 
 
 def races_map():
-    gpx_data_dir = Path("data/raw/races")
+    gpx_data_dir = Path("data/raw/belgium")
     map_type = "polyline"
     tiles = "openstreetmap"  # "cartodbdark_matter"
-    maps = folium.Map(location=[53, 13], tiles=tiles, zoom_start=5)
+    maps = folium.Map(location=[50, 4], tiles=tiles, zoom_start=7)
     maps = gpx_to_map(maps=maps, gpx_data_dir=gpx_data_dir, map_type=map_type)
 
     target_path = Path.cwd() / f"data/processed/map_races_{tiles}_{map_type}.html"
@@ -86,5 +89,5 @@ def races_map():
 
 
 if __name__ == "__main__":
-    # tracking_map()
-    races_map()
+    tracking_map()
+    # races_map()
